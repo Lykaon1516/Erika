@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Feliz Cumpleaños Erika</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            background-color: #000000;
+            color: white; 
+            font-family: 'Open Sans', sans-serif;
+            overflow: hidden;
+            touch-action: manipulation;
+        }
+
+        /* --- PANTALLAS --- */
+        .pantalla {
+            position: relative;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            height: 100vh; width: 100%; gap: 20px;
+            z-index: 10;
+            text-align: center;
+        }
+
+        #pantalla2 {
+            background-color: #2e004f !important; 
+            background-image: radial-gradient(circle, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.6) 100%), url('FONDO2.jpeg');
+            background-size: 200px;
+            background-repeat: repeat;
+        }
+
+        .oculto { display: none !important; }
+
+        /* --- REBOTES LED --- */
+        .contenedor-rebote {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 1; overflow: hidden;
+        }
+
+        .btn-rebotando {
+            position: absolute;
+            padding: 0; border: none; background: none;
+            cursor: pointer; z-index: 5;
+        }
+
+        .img-rebotando {
+            width: 65px; height: auto; border-radius: 10px;
+            border: 2px solid #bf00ff;
+            box-shadow: 0 0 10px #bf00ff, 0 0 20px #8a2be2;
+        }
+
+        @keyframes rebote-H { from { left: 0; } to { left: calc(100% - 70px); } }
+        @keyframes rebote-V { from { top: 0; } to { top: calc(100% - 70px); } }
+
+        /* --- CONTENEDOR FOTOS PRINCIPALES --- */
+        .contenedor-fotos { 
+            display: flex; flex-wrap: wrap; 
+            justify-content: center; gap: 15px; 
+            z-index: 20; width: 95%;
+        }
+        
+        .btn-foto {
+            background: none; border: 3px solid #bf00ff;
+            cursor: pointer; border-radius: 15px;
+            overflow: hidden; transition: 0.3s;
+            box-shadow: 0 0 15px #bf00ff;
+            padding: 0; line-height: 0;
+        }
+
+        .btn-foto:hover { transform: scale(1.05); border-color: white; }
+
+        .foto-miniatura { width: 110px; height: auto; display: block; }
+
+        /* --- MODALES OPTIMIZADOS --- */
+        .modal-full {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 2000; display: flex;
+            background-color: rgba(0,0,0,0.95);
+        }
+        
+        .seccion-mitades { 
+            display: flex; flex-direction: row; 
+            width: 100%; height: 100%; 
+        }
+
+        .mitad-texto, .mitad-imagen { 
+            flex: 1; display: flex; justify-content: center; 
+            align-items: center; padding: 20px; 
+        }
+
+        .texto-lectura {
+            width: 90%; max-height: 75vh; padding: 25px; 
+            font-size: 1.1rem; line-height: 1.6; border-radius: 20px; 
+            overflow-y: auto; white-space: pre-wrap;
+            border: 2px solid #bf00ff; box-shadow: 0 0 20px #bf00ff;
+            text-align: left;
+        }
+
+        .img-grande { 
+            max-width: 90%; max-height: 80%; border-radius: 15px; 
+            border: 3px solid #bf00ff; box-shadow: 0 0 25px #bf00ff;
+        }
+
+        /* --- AJUSTES PARA CELULAR --- */
+        @media (max-width: 768px) {
+            h1 { font-size: 3rem !important; }
+            .seccion-mitades { flex-direction: column-reverse; } /* Imagen arriba, texto abajo */
+            .mitad-texto, .mitad-imagen { padding: 15px; }
+            .texto-lectura { font-size: 1rem; padding: 15px; max-height: 40vh; }
+            .img-grande { max-height: 45vh; }
+            .foto-miniatura { width: 90px; }
+            .mensaje-final { font-size: 1.2rem; }
+        }
+
+        /* --- ESTÉTICA GENERAL --- */
+        h1 { 
+            font-family: 'Dancing Script', cursive; font-size: 5rem; 
+            color: white; margin: 0; text-shadow: 0 0 15px #bf00ff, 0 0 30px #8a2be2;
+        }
+
+        .btn-morado { 
+            background: linear-gradient(45deg, #6a0dad, #ba55d3); 
+            color: white; padding: 15px 40px; border: 2px solid white; 
+            border-radius: 50px; cursor: pointer; font-size: 18px; 
+            font-weight: bold; box-shadow: 0 0 15px #bf00ff;
+        }
+
+        .btn-azul-back { 
+            position: absolute; top: 15px; right: 15px;
+            background-color: #007bff; color: white; 
+            padding: 10px 25px; border: 2px solid white; border-radius: 50px; 
+            cursor: pointer; font-weight: bold; z-index: 2100; font-size: 14px;
+        }
+
+        .mensaje-final { font-size: 1.6rem; font-weight: 600; text-shadow: 0 0 10px #bf00ff; }
+    </style>
+</head>
+<body onclick="iniciarMusicaInicial()">
+
+    <audio id="audio1" src="inicio.mp3" loop></audio>
+    <audio id="audio2" src="parte2.mp3" loop></audio>
+    <audio id="audioModal1" src="ella.mp3" loop></audio>
+    <audio id="audioModal2" src="medio.mp3" loop></audio>
+    <audio id="audioModal3" src="el.mp3" loop></audio>
+
+    <div id="pantalla1" class="pantalla">
+        <img src="imagen.jpeg" style="max-width: 220px; border-radius: 20px; border: 3px solid #bf00ff; box-shadow: 0 0 20px #bf00ff;">
+        <p>Haz clic para activar el sonido</p>
+        <button onclick="irAPantalla2()" class="btn-morado">Ingresar</button>
+    </div>
+
+    <div id="pantalla2" class="pantalla oculto">
+        <div class="contenedor-rebote">
+            <script>
+                for(let i=1; i<=10; i++) {
+                    let durH = (Math.random() * 6 + 5).toFixed(2);
+                    let durV = (Math.random() * 6 + 5).toFixed(2);
+                    let retraso = (Math.random() * 10 * -1).toFixed(2);
+                    document.write(`
+                        <button class="btn-rebotando" onclick="verImagenFondo('${i}.jpeg')"
+                                style="animation: rebote-H ${durH}s linear infinite alternate, 
+                                                  rebote-V ${durV}s linear infinite alternate;
+                                       animation-delay: ${retraso}s;">
+                            <img src="${i}.jpeg" class="img-rebotando">
+                        </button>
+                    `);
+                }
+            </script>
+        </div>
+
+        <h1>¡Feliz Cumpleaños!</h1>
+        
+        <div class="contenedor-fotos">
+            <button class="btn-foto" onclick="abrirModal('modal1', 'audioModal1')">
+                <img src="iz.jpeg" class="foto-miniatura">
+            </button>
+            <button class="btn-foto" onclick="abrirModal('modal2', 'audioModal2')">
+                <img src="me.jpeg" class="foto-miniatura">
+            </button>
+            <button class="btn-foto" onclick="abrirModal('modal3', 'audioModal3')">
+                <img src="de.jpeg" class="foto-miniatura">
+            </button>
+        </div>
+        
+        <p class="mensaje-final">Por este momento hoy es un feliz día.</p>
+    </div>
+
+    <div id="modalFondo" class="modal-full oculto" style="justify-content: center; align-items: center;">
+        <button class="btn-azul-back" onclick="cerrarModalFondo()">CERRAR</button>
+        <img id="imgZoom" src="" class="img-grande">
+    </div>
+
+    <div id="modal1" class="modal-full oculto">
+        <button class="btn-azul-back" onclick="cerrarModal('modal1', 'audioModal1')">VOLVER</button>
+        <div class="seccion-mitades">
+            <div class="mitad-texto">
+                <div class="texto-lectura" style="background: rgba(255,255,255,0.08); color: white;">ERIKA...
+DESDE QUE TE CONOSCO ERES UNA PERSONA MUY AMABLE, RESPONSABLE, Y ALGUIEN A QUIEN ADMIRO MUCHO. EN ESTOS AÑOS HE VISTO CÓMO HAZ CRECIDO POCO A POCO Y SUPERANDO CUALQUIER LÍMITE QUE TE HAS PUESTO O TE HAN PUESTO Y ESO ME HACE SENTIR MUY ORGULLOSO DE TI Y DE TODO LO QUE HAS LOGRADO. SE QUE VAS A LOGRAR MÁS COSAS EN EL FUTURO, SOLO NO AFLOJES EL PASO, SIGUE ASÍ COMO VAS Y LO HARÁS BIEN. HOY QUE ES TU CUMPLEAÑOS QUISE HACER ALGO ESPECIAL Y TE CREÉ ESTE APARTADO PARA TI. MERECES MÁS PERO AÚN NO PUEDO BRINDARTE TODO LO QUE OCUPAS, PERO QUIERO QUE RECUERDES QUE TÚ ERES CAPAZ DE HACER TODO LO QUE TE PROPONGAS EN ESTA VIDA Y SI POR ALGÚN MOTIVO TE CAES YO TE LEVANTARÉ, Y SI NO QUIERES, NOS CAEMOS Y CUANDO ESTÉS PREPARADA TE AYUDARÉ A SUBIR. ASÍ QUE ÁNIMOS, LO ESTÁS HACIENDO BIEN.</div>
+            </div>
+            <div class="mitad-imagen"><img src="iz.jpeg" class="img-grande"></div>
+        </div>
+    </div>
+
+    <div id="modal2" class="modal-full oculto">
+        <button class="btn-azul-back" onclick="cerrarModal('modal2', 'audioModal2')">VOLVER</button>
+        <div class="seccion-mitades">
+            <div class="mitad-texto">
+                <div class="texto-lectura" style="background: white; color: #1a0033;">te conoci...
+                    EL DIA QUE TE CONOCI ME SENTI MUY NERVIOSO PUES ERES LA PRIMERA AMIGA ADISTANCIA QUE CONOSCO Y LA VERDAD ESYOY FELIZ POR AVERTE CONOCIDO YA QUE TE HAS ECHO ALGUIEN ESPACIAL PARA MI, TAMBIEN CONOCI A TU MAMI UN AMOR DE PERSONA, SIENTO QUE AUN QUE NO HABLEMOS DIARIO AUN ASI SABEMOS QUE ESTAMOS EL UNO PARA EL OTRO SIN IMPORTAR QUE PASE, SIEMPRE ESTAS PARA ESCUCHARME O YO A TI ESO ES MUY BONITO Y LA VERDAD QUIERO UN DIA IR AVERTE ALLA A DONDE VIVES AUN NO PUEDO PERO LO VOY HACER SISISISISISI Y ES UNA PROMESA, SOLO QUEDA ESPERAR Y SEGUIR CON ESTA AMISTAD QUE TENEMOS Y QUE SIEMPRE VA A DURAR NO IMPORTA QUE PASE.
+                </div>
+            </div>
+            <div class="mitad-imagen"><img src="me.jpeg" class="img-grande"></div>
+        </div>
+    </div>
+
+    <div id="modal3" class="modal-full oculto">
+        <button class="btn-azul-back" onclick="cerrarModal('modal3', 'audioModal3')">VOLVER</button>
+        <div class="seccion-mitades">
+            <div class="mitad-texto">
+                <div class="texto-lectura" style="background: rgba(255,255,255,0.08); color: white;">CHUY...
+                    SOLO DIRE QUE FELIZ CUMPLEAÑOS Y ESPERO QUE TE LA PASES MUY BIEN EN ESTE DIA Y QUIERO QUE SONRIAS MUCHO Y DIRAS "POR QUE VOY A SONREIR? " Y TE DIRE "POR TODO LO QUE HAZ LOGRADO ", ESTAS ESTUDIANDO MEDICINA, CONSEGUISTE EL PRIMER LUGAR EN CALIFICACIONES Y VAS SUPERANDOTE POCO A POPCO AUN QUE TU NO LO QUIERES VER, YA QUE A TUS OJOS NO HAZ ECHO MUCHO Y HAZ AVANZADO MUY POCO PERO A MIS OJOS NO SABES COMO VEO QUE HAZ AVAZADO, HAZ DADO PASOS GIGANTES Y CADA DIA APRENDES MAS Y TE INTERESAN MAS COSAS Y MIENTRAS TE SIGAN INTEREZANDO COSAS SEGUIRAS AVANZANDO POR QUE ASI ERES TU, UN ALMA QUE BUSCA Y QUIERE CONOCIMIENTOS, EXPERIENCIAS Y SABER QUE LO ESTAS HACIENDO BIEN Y CREME LIO ESTAS HACIENDO DE MARAVILLA, CADA QUE ME CUENTAS TUS COSAS ME TRASMITES ESA ALEGRIA Y NO ME IMPORTA ESTARTE ESCUCHANDO TODO EL DIA SIN QUE YO HABLE CON TAN DE QUE SIGAS HABLANDO DE LO QUE TE GUSTA Y ME AYUDA A MI A SABER MAS COSAS, POR ESO TU APODO DE "DOMI SOLIS" GOTA DE SOL JAJAJA ESO ERES, UNA PEQUEÑA GOTA DE SOL QUE ALEGRA LA VIDA DE QUIEN SEA CUANDO TE ESCUCHAN HABLAR DE LO QUE TE GUSTA, SIENTO QUE YA ESCRIBI MUCHO ASI QUE HGASTA AQUI LO DEJO JEJEJEJE, FELIZ CUMPLEAÑOS TE QUIERO MUCHO, TE ADORO, TE AMO LO SABES NUNCA LO OLVIDES Y VE POR TODO SE QUE LO VAS A LOGRAR.
+                    ESTOY ORGULLOSO DE TIIIIII.
+                </div>
+            </div>
+            <div class="mitad-imagen"><img src="de.jpeg" class="img-grande"></div>
+        </div>
+    </div>
+
+    <script>
+        const a1 = document.getElementById('audio1');
+        const a2 = document.getElementById('audio2');
+        let musicaIniciada = false;
+
+        function detenerTodo() {
+            document.querySelectorAll('audio').forEach(a => { a.pause(); a.currentTime = 0; });
+        }
+
+        function iniciarMusicaInicial() {
+            if (!musicaIniciada) { a1.play().catch(()=>{}); musicaIniciada = true; }
+        }
+
+        function irAPantalla2() {
+            detenerTodo();
+            document.getElementById('pantalla1').classList.add('oculto');
+            document.getElementById('pantalla2').classList.remove('oculto');
+            a2.play();
+        }
+
+        function abrirModal(idModal, idAudio) { 
+            detenerTodo();
+            document.getElementById(idModal).classList.remove('oculto'); 
+            document.getElementById(idAudio).play();
+        }
+
+        function cerrarModal(idModal, idAudio) { 
+            detenerTodo();
+            document.getElementById(idModal).classList.add('oculto'); 
+            a2.play();
+        }
+
+        function verImagenFondo(src) {
+            document.getElementById('imgZoom').src = src;
+            document.getElementById('modalFondo').classList.remove('oculto');
+        }
+
+        function cerrarModalFondo() {
+            document.getElementById('modalFondo').classList.add('oculto');
+        }
+    </script>
+</body>
+</html>

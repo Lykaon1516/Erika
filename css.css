@@ -1,0 +1,42 @@
+/* Quitamos márgenes por defecto y ponemos el fondo negro */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #000000; /* Fondo totalmente negro */
+    height: 100vh;            /* Altura de toda la pantalla */
+    display: flex;
+    justify-content: center;  /* Centra horizontalmente */
+    align-items: center;      /* Centra verticalmente */
+    overflow: hidden;         /* Evita barras de desplazamiento */
+}
+
+.contenedor-principal {
+    display: flex;
+    flex-direction: column;   /* Pone los elementos uno debajo de otro */
+    align-items: center;      /* Centra la imagen y el botón entre sí */
+    gap: 20px;               /* Espacio de separación entre imagen y botón */
+}
+
+.imagen-runa {
+    max-width: 300px;         /* Ajusta el tamaño de tu imagen aquí */
+    height: auto;
+}
+
+.boton-ingresar {
+    background-color: #6a0dad; /* Color morado */
+    color: white;
+    padding: 10px 30px;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.boton-ingresar:hover {
+    background-color: #8a2be2; /* Cambia a un morado más claro al pasar el mouse */
+}
